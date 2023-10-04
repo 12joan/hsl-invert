@@ -1,0 +1,43 @@
+<h1>Input</h1>
+<input type="color" id="color-input" />
+<p>RGB: <span id="rgb-input">-/-</span></p>
+<p>HSL: <span id="hsl-input">-/-</span></p>
+
+<h1>Output</h1>
+<input type="color" id="color-output" readonly />
+<p>RGB: <span id="rgb-output">-/-</span></p>
+<p>HSL: <span id="hsl-output">-/-</span></p>
+
+
+<script type="module">
+  import convert from './vendor/color-convert.min.js';
+
+  // DOM elements
+  const colorInputEl = document.getElementById('color-input');
+  const rgbInputEl = document.getElementById('rgb-input');
+  const hslInputEl = document.getElementById('hsl-input')
+
+  const colorOutputEl = document.getElementById('color-output');
+  const rgbOutputEl = document.getElementById('rgb-output');
+  const hslOutputEl = document.getElementById('hsl-output');
+
+  // Utils
+  const rgbToString = ([r, g, b]) => `rgb(${r}, ${g}, ${b})`;
+  const hslToString = ([h, s, l]) => `hsl(${h}, ${s}%, ${l}%)`;
+  const hexToString = (hex) => `#${hex}`;
+  const invertHsl = ([h, s, l]) => [h, s, 100 - l];
+
+  colorInputEl.addEventListener('input', () => {
+    const hexInput = colorInputEl.value;
+    const hslInput = convert.hex.hsl(hexInput);
+
+    rgbInputEl.textContent = rgbToString(convert.hex.rgb(hexInput));
+    hslInputEl.textContent = hslToString(hslInput);
+
+    const hslOutput = invertHsl(hslInput);
+
+    colorOutputEl.value = hexToString(convert.hsl.hex(hslOutput));
+    rgbOutputEl.textContent = rgbToString(convert.hsl.rgb(hslOutput));
+    hslOutputEl.textContent = hslToString(hslOutput);
+  });
+</script>
